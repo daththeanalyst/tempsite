@@ -1,0 +1,61 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Temporarily move server-only and dynamic routes for static export
+      - name: Prepare for static export
+        run: |
+          mv src/app/api src/app/_api_backup
+          mv "src/app/(auth)/callback" "src/app/(auth)/_callback_backup"
+          mv src/app/s src/app/_s_backup
+          mv src/app/editor src/app/_editor_backup
+
+      - run: npm run build
+
+      # Restore routes
+      - name: Restore routes
+        if: always()
+        run: |
+          mv src/app/_api_backup src/app/api 2>/dev/null || true
+          mv "src/app/(auth)/_callback_backup" "src/app/(auth)/callback" 2>/dev/null || true
+          mv src/app/_s_backup src/app/s 2>/dev/null || true
+          mv src/app/_editor_backup src/app/editor 2>/dev/null || true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
