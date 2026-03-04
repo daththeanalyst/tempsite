@@ -31,7 +31,8 @@ jobs:
       - name: Prepare for static export
         run: |
           mv src/app/api src/app/_api_backup
-          mv "src/app/(auth)/callback" "src/app/(auth)/_callback_backup"
+          mv "src/app/(auth)" "src/app/_auth_backup"
+          mv "src/app/(dashboard)" "src/app/_dashboard_backup"
           mv src/app/s src/app/_s_backup
           mv src/app/editor src/app/_editor_backup
 
@@ -42,7 +43,8 @@ jobs:
         if: always()
         run: |
           mv src/app/_api_backup src/app/api 2>/dev/null || true
-          mv "src/app/(auth)/_callback_backup" "src/app/(auth)/callback" 2>/dev/null || true
+          mv "src/app/_auth_backup" "src/app/(auth)" 2>/dev/null || true
+          mv "src/app/_dashboard_backup" "src/app/(dashboard)" 2>/dev/null || true
           mv src/app/_s_backup src/app/s 2>/dev/null || true
           mv src/app/_editor_backup src/app/editor 2>/dev/null || true
 
