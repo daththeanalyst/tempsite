@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TempSite — AI Website Builder</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ========== Reset & Base ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    :root {
+      --bg: #0a0a12;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface-hover: rgba(255, 255, 255, 0.08);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --purple: #a78bfa;
+      --pink: #ec4899;
+      --cyan: #22d3ee;
+      --amber: #f59e0b;
+    }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+    
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+    }
+    
+    section {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    /* ========== Shared Elements ========== */
+    .gradient-text {
+      background: linear-gradient(90deg, #6366f1, #a78bfa, #818cf8);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .shimmer-text {
+      background: linear-gradient(90deg, #6366f1, #a78bfa, #6366f1, #818cf8, #6366f1);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shimmer 4s linear infinite;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border: 1px solid var(--primary-light);
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.6);
+      transform: translateY(-2px);
+      background: var(--primary-light);
+    }
+    
+    .btn-outline {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: #fff;
+      backdrop-filter: blur(10px);
+    }
+    
+    .btn-outline:hover {
+      background: var(--surface-hover);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-glow-pulse {
+      animation: button-pulse 2s infinite;
+    }
+
+    /* ========== Keyframes ========== */
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    
+    @keyframes float-orb-1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(40px, -50px) scale(1.05); }
+      66% { transform: translate(-30px, 30px) scale(0.95); }
+    }
+    
+    @keyframes float-orb-2 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(-30px, 40px) scale(1.03); }
+      66% { transform: translate(25px, -20px) scale(0.97); }
+    }
+    
+    @keyframes gentle-float {
+      0%, 100% { transform: perspective(1000px) rotateX(5deg) rotateY(-8deg) translateY(0); }
+      50% { transform: perspective(1000px) rotateX(5deg) rotateY(-8deg) translateY(-15px); }
+    }
+    
+    @keyframes bounce-arrow {
+      0%, 100% { transform: translateY(0); opacity: 0.5;}
+      50% { transform: translateY(15px); opacity: 1;}
+    }
+    
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); border-color: rgba(99, 102, 241, 0.4); }
+      50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.7); border-color: rgba(99, 102, 241, 0.7); }
+    }
+    
+    @keyframes button-pulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+      50% { box-shadow: 0 0 40px rgba(99, 102, 241, 0.7); }
+    }
+    
+    @keyframes blink { 
+      0%, 100% { border-color: transparent } 
+      50% { border-color: var(--primary) }
+    }
+
+    @keyframes typing {
+      from { width: 0; border-color: transparent; }
+      to { width: 100%; border-color: transparent; }
+    }
+    
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ========== Navigation ========== */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      padding: 24px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .navbar.scrolled {
+      background: rgba(10, 10, 18, 0.7);
+      backdrop-filter: blur(20px);
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -6px; left: 0;
+      width: 0; height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+    
+    .nav-btn {
+      padding: 10px 20px;
+      font-size: 14px;
+      animation: button-pulse 3s infinite;
+    }
+    
+    /* ========== Hero Section ========== */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 100px;
+    }
+    
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      z-index: 0;
+    }
+    
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+    }
+    
+    .hero-orb-indigo {
+      width: 400px; height: 400px;
+      background: var(--primary);
+      top: 15%; left: 15%;
+      opacity: 0.35;
+      animation: float-orb-1 12s infinite ease-in-out;
+    }
+    
+    .hero-orb-purple {
+      width: 350px; height: 350px;
+      background: var(--purple);
+      bottom: 20%; right: 15%;
+      opacity: 0.25;
+      animation: float-orb-2 10s infinite ease-in-out;
+    }
+    
+    .hero-orb-cyan {
+      width: 300px; height: 300px;
+      background: var(--cyan);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.15;
+      animation: float-orb-1 8s infinite ease-in-out reverse;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 4px;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+    
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -1px;
+    }
+    
+    .hero p.subheading {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+    
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    
+    .hero-mockup-wrap {
+      margin-top: 60px;
+      perspective: 1000px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .browser-mockup {
+      width: 100%;
+      max-width: 760px;
+      background: #0f0f15;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      animation: gentle-float 6s infinite ease-in-out;
+      overflow: hidden;
+    }
+    
+    .browser-chr {
+      height: 36px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+    }
+    
+    .chr-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .chr-dot:nth-child(1) { background: #ff5f56; }
+    .chr-dot:nth-child(2) { background: #ffbd2e; }
+    .chr-dot:nth-child(3) { background: #27c93f; }
+    
+    .chr-url {
+      flex: 1;
+      margin: 0 16px;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 24px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    
+    .browser-body {
+      padding: 32px;
+      background: linear-gradient(180deg, rgba(6, 6, 12, 0.8), rgba(15, 15, 25, 0.8));
+    }
+    
+    .browser-hero {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(167, 139, 250, 0.1));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .browser-hero-h { width: 50%; height: 20px; background: rgba(255,255,255,0.1); border-radius: 4px; margin-bottom: 12px; }
+    .browser-hero-p { width: 30%; height: 12px; background: rgba(255,255,255,0.05); border-radius: 4px; }
+    
+    .browser-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .browser-card { height: 80px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; }
+    
+    .scroll-down {
+      position: absolute;
+      bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      color: var(--muted);
+      animation: bounce-arrow 3s infinite ease-in-out;
+      z-index: 2;
+    }
+    
+    /* ========== Social Marquee ========== */
+    .marquee-section {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+    .marquee-title {
+      text-align: center;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 30px;
+    }
+    .marquee-track {
+      display: flex;
+      width: 200%;
+      animation: marquee 20s linear infinite;
+    }
+    .marquee-items {
+      display: flex;
+      width: 50%;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .marquee-item {
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: rgba(255, 255, 255, 0.15);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    /* ========== Section Headers ========== */
+    .sec-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+    
+    .sec-header h2 {
+      font-size: clamp(28px, 4vw, 40px);
+      margin-bottom: 16px;
+    }
+    
+    .sec-header p {
+      color: var(--muted);
+      font-size: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ========== Categories (3D Tilt Cards) ========== */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    
+    .tilt-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    
+    /* Glow effect based on mouse pos */
+    .tilt-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(400px circle at var(--mx) var(--my), var(--hover-color), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .tilt-card:hover::before {opacity: 1;}
+    .tilt-card:hover { border-color: rgba(255,255,255,0.15); }
+    
+    .tilt-content { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; }
+    
+    .tc-icon {
+      width: 56px; height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .tc-icon.pink { background: rgba(236,72,153, 0.1); color: var(--pink); border: 1px solid rgba(236,72,153,0.2) }
+    .tc-icon.blue { background: rgba(34,211,238, 0.1); color: var(--cyan); border: 1px solid rgba(34,211,238,0.2) }
+    .tc-icon.amber { background: rgba(245,158,11, 0.1); color: var(--amber); border: 1px solid rgba(245,158,11,0.2) }
+    
+    .tilt-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
+    .tilt-card p { font-size: 15px; color: var(--muted); margin-bottom: 32px; flex: 1; }
+    
+    .tc-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tc-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 100px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    
+    .delay-1 { transition-delay: 100ms; }
+    .delay-2 { transition-delay: 200ms; }
+    .delay-3 { transition-delay: 300ms; }
+
+    /* ========== How It Works Timeline ========== */
+    .timeline {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .tl-line {
+      position: absolute;
+      top: 24px; left: 10%; right: 10%;
+      height: 2px;
+      background: var(--surface);
+      z-index: 0;
+    }
+    
+    .tl-fill {
+      position: absolute;
+      top: 0; left: 0; bottom: 0; width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--purple), var(--pink));
+      transition: width 1.5s ease-out;
+    }
+    .timeline.scrolled .tl-fill { width: 100%; }
+    
+    .tl-step {
+      position: relative;
+      z-index: 1;
+      width: 25%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .tl-num {
+      width: 48px; height: 48px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 24px;
+      transition: all 0.5s ease;
+    }
+    
+    .timeline.scrolled .tl-num {
+      border-color: var(--primary);
+      color: var(--primary);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    .timeline.scrolled .tl-step:nth-child(4) .tl-num {
+      animation: pulse-border 2s infinite alternate; 
+    }
+    
+    .tl-icon { font-size: 32px; margin-bottom: 16px; }
+    .tl-step h3 { font-size: 18px; margin-bottom: 8px; }
+    .tl-step p { font-size: 14px; color: var(--muted); padding: 0 12px; }
+
+    /* ========== Features Bento ========== */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    
+    .bc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+      overflow: hidden;
+      position: relative;
+    }
+    .bc:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.15); }
+    .bc.wide { grid-column: span 2; }
+    
+    .bc-icon { font-size: 32px; margin-bottom: 20px; }
+    .bc h3 { font-size: 20px; margin-bottom: 12px; }
+    .bc p { font-size: 15px; color: var(--muted); }
+    
+    .bc-content {
+      margin-top: 32px;
+      flex: 1;
+      background: rgba(0,0,0,0.3);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    
+    .typing-container {
+      font-family: monospace;
+      font-size: 14px;
+      color: var(--primary-light);
+      align-self: flex-start;
+      margin-top: 10px;
+    }
+    
+    .line {
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid transparent;
+      margin-bottom: 4px;
+      width: 0;
+    }
+    
+    .typing-active .l1 { animation: typing 1s steps(30) forwards, blink 0.5s step-end infinite alternate; }
+    .typing-active .l2 { animation: typing 1s steps(30) 1s forwards, blink 0.5s step-end infinite alternate; color: var(--purple); }
+    .typing-active .l3 { animation: typing 1s steps(30) 2s forwards, blink 0.5s step-end infinite alternate; }
+    
+    .devices { display: flex; align-items: flex-end; gap: 16px; margin-top: auto; }
+    .dev { border: 2px solid var(--border); border-bottom: 0; border-radius: 8px 8px 0 0; background: #0f0f12; }
+    .dev-pc { width: 140px; height: 90px; }
+    .dev-tab { width: 70px; height: 100px; }
+    .dev-phone { width: 45px; height: 80px; }
+
+    /* ========== Live Demo Preview ========== */
+    .demo-wrapper {
+      perspective: 1200px;
+      margin-top: 40px;
+    }
+    
+    .huge-mockup {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      background: #0f0f12;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+      transform: perspective(1000px) rotateX(4deg) rotateY(-3deg);
+      transition: transform 0.5s ease;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    
+    .huge-mockup:hover { transform: perspective(1000px) rotateX(0) rotateY(0); }
+    
+    .hm-chr {
+      height: 36px;
+      background: rgba(255,255,255,0.05);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+    }
+    
+    .hm-url {
+      flex: 1; margin: 0 16px; background: rgba(0,0,0,0.4);
+      height: 24px; border-radius: 6px; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 12px; color: var(--muted);
+    }
+    
+    .hm-body {
+      padding: 40px;
+      background: linear-gradient(180deg, rgba(30, 27, 75, 0.4), rgba(49, 46, 129, 0.2));
+      min-height: 400px;
+    }
+    
+    .hm-hero {
+      background: linear-gradient(135deg, #1e1b4b, #312e81);
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .hm-hero h3 { font-size: 28px; margin-bottom: 12px; }
+    .hm-hero p { font-size: 14px; color: #a5b4fc; }
+    
+    .hm-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .hm-card { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 24px; text-align: center;}
+    .hm-icon { font-size: 32px; margin-bottom: 12px; }
+    .hm-card h4 { font-size: 16px; margin-bottom: 12px; }
+    .hm-card p { font-size: 13px; color: #a5b4fc; }
+
+    /* ========== Pricing ========== */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    
+    .p-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px 32px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .p-card:hover { transform: translateY(-4px); }
+    
+    .p-featured {
+      background: rgba(255,255,255,0.06);
+      border-color: rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+      transform: scale(1.05);
+    }
+    .p-featured:hover { transform: scale(1.05) translateY(-4px); }
+    
+    .p-badge {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(90deg, var(--primary), var(--purple));
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      box-shadow: 0 4px 12px rgba(99,102,241,0.4);
+    }
+    
+    .p-tier { font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .p-price { font-size: 48px; font-weight: 800; color: #fff; margin-bottom: 8px; }
+    .p-price span { font-size: 16px; color: var(--muted); font-weight: 400; }
+    .p-desc { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    
+    .p-list { list-style: none; margin-bottom: 40px; }
+    .p-list li { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 15px; }
+    .p-list li::before { content: '✓'; color: var(--primary); font-weight: 700; }
+    
+    .w-full { width: 100%; }
+
+    /* ========== Final CTA ========== */
+    .final-cta {
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .final-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      z-index: 0;
+      opacity: 0.15;
+    }
+    .fo-1 { width: 600px; height: 600px; background: var(--pink); top: 50%; left: -10%; transform: translateY(-50%); animation: float-orb-1 15s infinite; }
+    .fo-2 { width: 500px; height: 500px; background: var(--cyan); top: 50%; right: -10%; transform: translateY(-50%); animation: float-orb-2 12s infinite; }
+    
+    .final-content { position: relative; z-index: 2; border-top: 1px solid var(--border); padding: 120px 0; }
+    .final-content h2 { font-size: clamp(40px, 5vw, 56px); margin-bottom: 24px; font-weight: 800; }
+    .final-content p { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
+
+    /* ========== Footer ========== */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      text-align: center;
+      background: var(--bg);
+    }
+    
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .f-logo { font-size: 18px; font-weight: 700; }
+    
+    .f-links { display: flex; gap: 24px; align-items: center;}
+    .f-links a { font-size: 14px; color: var(--muted); transition: color 0.3s; }
+    .f-links a:hover { color: #fff; }
+
+    /* ========== Responsive ========== */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .cat-grid, .pricing-grid, .bento-grid { grid-template-columns: 1fr; }
+      .bc.wide { grid-column: span 1; }
+      .timeline { flex-direction: column; gap: 40px; }
+      .tl-line { width: 2px; height: 100%; top: 0; left: 24px; bottom: 0; right: auto; }
+      .tl-fill { width: 2px; height: 0; }
+      .timeline.scrolled .tl-fill { height: 100%; width: 2px; }
+      .tl-step { width: 100%; flex-direction: row; text-align: left; }
+      .tl-num { margin-bottom: 0; margin-right: 24px; }
+      .p-featured { transform: scale(1); }
+      .p-featured:hover { transform: translateY(-4px); }
+      .hm-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="nav-logo gradient-text">TempSite</a>
+      <div class="nav-links">
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#howitworks" class="nav-link">How It Works</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#" class="btn btn-primary nav-btn">Get Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-orb hero-orb-indigo"></div>
+    <div class="hero-orb hero-orb-purple"></div>
+    <div class="hero-orb hero-orb-cyan"></div>
+    
+    <div class="container hero-content">
+      <div class="reveal">
+        <span class="hero-eyebrow">AI-Powered Website Builder</span>
+        <h1>Build Stunning Websites<br><span class="shimmer-text">In Seconds</span></h1>
+        <p class="subheading">Create event pages, business sites, and encrypted proposals with AI. Edit visually with GlassStudio. Publish instantly.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn btn-primary btn-glow-pulse">Start Building — Free</a>
+          <a href="#demo" class="btn btn-outline">See Demo &nbsp;▶</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="container hero-mockup-wrap reveal delay-2">
+      <div class="browser-mockup">
+        <div class="browser-chr">
+          <div class="chr-dot"></div>
+          <div class="chr-dot"></div>
+          <div class="chr-dot"></div>
+          <div class="chr-url">tempsite.app/pytorch-london-2026</div>
+        </div>
+        <div class="browser-body">
+          <div class="browser-hero">
+            <div class="browser-hero-h"></div>
+            <div class="browser-hero-p"></div>
+          </div>
+          <div class="browser-cards">
+            <div class="browser-card"></div>
+            <div class="browser-card"></div>
+            <div class="browser-card"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="scroll-down">↓</div>
+  </section>
+
+  <!-- Social Proof Marquee -->
+  <div class="marquee-section">
+    <div class="marquee-title">BUILT FOR CREATORS, TEAMS, AND BUSINESSES</div>
+    <div class="marquee-track">
+      <div class="marquee-items">
+        <span class="marquee-item">HACKATHONS</span>
+        <span class="marquee-item">BIRTHDAY PARTIES</span>
+        <span class="marquee-item">BUSINESS PITCHES</span>
+        <span class="marquee-item">TECH MEETUPS</span>
+      </div>
+      <div class="marquee-items">
+        <span class="marquee-item">FOOTBALL EVENTS</span>
+        <span class="marquee-item">MARATHONS</span>
+        <span class="marquee-item">CLUB MEETINGS</span>
+        <span class="marquee-item">PROPOSALS</span>
+      </div>
+      <div class="marquee-items">
+        <span class="marquee-item">HACKATHONS</span>
+        <span class="marquee-item">BIRTHDAY PARTIES</span>
+        <span class="marquee-item">BUSINESS PITCHES</span>
+        <span class="marquee-item">TECH MEETUPS</span>
+      </div>
+      <div class="marquee-items">
+        <span class="marquee-item">FOOTBALL EVENTS</span>
+        <span class="marquee-item">MARATHONS</span>
+        <span class="marquee-item">CLUB MEETINGS</span>
+        <span class="marquee-item">PROPOSALS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <section id="categories" class="container">
+    <div class="sec-header reveal">
+      <h2>Three Categories, <span class="gradient-text">One Platform</span></h2>
+      <p>Whether you're organizing a casual meetup or sending a high-stakes business proposal, TempSite handles the design, responsiveness, and hosting automatically.</p>
+    </div>
+    
+    <div class="cat-grid">
+      <div class="tilt-card reveal delay-1" style="--hover-color: rgba(236,72,153,0.15)">
+        <div class="tilt-content">
+          <div class="tc-icon pink">🎉</div>
+          <h3>Social Events</h3>
+          <p>Beautiful event pages with RSVP forms, galleries, and countdowns for your personal events.</p>
+          <div class="tc-tags">
+            <span class="tc-tag">Football Match</span>
+            <span class="tc-tag">Birthday Party</span>
+            <span class="tc-tag">Club Meeting</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tilt-card reveal delay-2" style="--hover-color: rgba(34,211,238,0.15)">
+        <div class="tilt-content">
+          <div class="tc-icon blue">💼</div>
+          <h3>Business Events</h3>
+          <p>Professional hubs with schedules, speakers, sponsors, and registration integrations.</p>
+          <div class="tc-tags">
+            <span class="tc-tag">Tech Meetup</span>
+            <span class="tc-tag">Hackathon</span>
+            <span class="tc-tag">Corporate Marathon</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="tilt-card reveal delay-3" style="--hover-color: rgba(245,158,11,0.15)">
+        <div class="tilt-content">
+          <div class="tc-icon amber">🔒</div>
+          <h3>Business Proposals</h3>
+          <p>Pitch decks and proposals — password protected. Content is never stored in the page source.</p>
+          <div class="tc-tags">
+            <span class="tc-tag">Investment Pitch</span>
+            <span class="tc-tag">Partnership Proposal</span>
+            <span class="tc-tag">Encrypted</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section id="howitworks" class="container">
+    <div class="sec-header reveal">
+      <h2>How It <span class="gradient-text">Works</span></h2>
+      <p>Go from an idea to a published, beautiful website faster than pouring a cup of coffee.</p>
+    </div>
+    
+    <div class="timeline" id="timeline">
+      <div class="tl-line"><div class="tl-fill"></div></div>
+      <div class="tl-step reveal delay-1">
+        <div class="tl-num">1</div>
+        <div>
+          <div class="tl-icon">📋</div>
+          <h3>Pick a Category</h3>
+          <p>Social event, business event, or business proposal</p>
+        </div>
+      </div>
+      <div class="tl-step reveal delay-2">
+        <div class="tl-num">2</div>
+        <div>
+          <div class="tl-icon">✏️</div>
+          <h3>Fill in Details</h3>
+          <p>Answer a few questions in our smart form interface</p>
+        </div>
+      </div>
+      <div class="tl-step reveal delay-3">
+        <div class="tl-num">3</div>
+        <div>
+          <div class="tl-icon">✨</div>
+          <h3>AI Generates</h3>
+          <p>Gemini Flash 2.0 builds your entire layout in ~5s</p>
+        </div>
+      </div>
+      <div class="tl-step reveal delay-3">
+        <div class="tl-num">4</div>
+        <div>
+          <div class="tl-icon">🚀</div>
+          <h3>Edit & Publish</h3>
+          <p>Tweak visually and share your unique live link instantly</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Bento Grid -->
+  <section class="container">
+    <div class="sec-header reveal">
+      <h2><span class="gradient-text">Everything</span> You Need</h2>
+      <p>A powerhouse combination of AI intelligence and robust visual editing tools.</p>
+    </div>
+    
+    <div class="bento-grid">
+      <!-- Card 1 Wide -->
+      <div class="bc wide reveal delay-1" id="type-trigger">
+        <div class="bc-icon">🤖</div>
+        <h3>AI Generation</h3>
+        <p>Powered by Gemini Flash 2.0. Generates your robust website sections asynchronously. Only takes ~5 seconds per website.</p>
+        <div class="bc-content">
+          <div class="typing-container">
+            <div class="line l1">&lt;section class="hero"&gt;</div>
+            <div class="line l2">&nbsp;&nbsp;&lt;h1&gt;Your Website Generated&lt;/h1&gt;</div>
+            <div class="line l3">&lt;/section&gt;</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="bc reveal delay-2">
+        <div class="bc-icon">🎨</div>
+        <h3>Visual Editor</h3>
+        <p>Powered by GlassStudio. Click any element to tweak colors, sizing, spacing, and 11 professional design tools.</p>
+      </div>
+      
+      <div class="bc reveal delay-3">
+        <div class="bc-icon">📤</div>
+        <h3>Multi-Format Export</h3>
+        <p>Take your code with you. Download pure HTML/CSS, React JSX, or Tailwind setups immediately.</p>
+      </div>
+      
+      <div class="bc reveal delay-1">
+        <div class="bc-icon">🔒</div>
+        <h3>Encrypted Proposals</h3>
+        <p>Fully secure, password-protected links. Content is downloaded dynamically and never sits in page source.</p>
+      </div>
+      
+      <div class="bc reveal delay-2">
+        <div class="bc-icon">⚡</div>
+        <h3>Instant Publishing</h3>
+        <p>Host on TempSite serverless edge network. Fast load times everywhere. One-click deploy.</p>
+      </div>
+      
+      <!-- Card 6 Wide -->
+      <div class="bc wide reveal delay-3">
+        <div class="bc-icon">📱</div>
+        <h3>Responsive Design</h3>
+        <p>Every generated component is purely mobile-ready. Use our viewport selectors to quickly preview devices.</p>
+        <div class="devices">
+          <div class="dev dev-pc"></div>
+          <div class="dev dev-tab"></div>
+          <div class="dev dev-phone"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Demo -->
+  <section id="demo" class="container">
+    <div class="sec-header reveal">
+      <h2>See It <span class="gradient-text">In Action</span></h2>
+      <p>A real business event page generated by our AI architecture in under 5 seconds.</p>
+    </div>
+    
+    <div class="demo-wrapper reveal delay-1">
+      <div class="huge-mockup">
+        <div class="hm-chr">
+          <div class="chr-dot"></div>
+          <div class="chr-dot"></div>
+          <div class="chr-dot"></div>
+          <div class="hm-url">tempsite.app/pytorch-london-2026</div>
+        </div>
+        <div class="hm-body">
+          <div class="hm-hero">
+            <h3>🔥 PyTorch London Meetup 2026</h3>
+            <p>March 22 · Imperial College London · 500+ Attendees Registered</p>
+          </div>
+          <div class="hm-grid">
+            <div class="hm-card">
+              <div class="hm-icon">📅</div>
+              <h4>Schedule</h4>
+              <p>10:00 AM - Opening Keynote<br>11:30 AM - Model Workshops<br>1:00 PM - Networking Lunch</p>
+            </div>
+            <div class="hm-card">
+              <div class="hm-icon">🎤</div>
+              <h4>Speakers</h4>
+              <p>Yann LeCun<br>Soumith Chintala<br>Chelsea Finn</p>
+            </div>
+            <div class="hm-card">
+              <div class="hm-icon">🤝</div>
+              <h4>Sponsors</h4>
+              <p>Meta AI<br>NVIDIA<br>Hugging Face</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="reveal delay-2" style="text-align: center; margin-top: 32px;">
+      <a href="#" style="color: var(--muted); font-size: 15px; font-weight: 500;">Try it yourself — no signup required</a>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing" class="container">
+    <div class="sec-header reveal">
+      <h2><span class="gradient-text">Simple</span> Pricing</h2>
+      <p>Start entirely for free. Choose a tier that works perfectly for your creation volume.</p>
+    </div>
+    
+    <div class="pricing-grid">
+      <div class="p-card reveal delay-1">
+        <h3 class="p-tier">Free</h3>
+        <div class="p-price">$0<span>/forever</span></div>
+        <p class="p-desc">Perfect to test the waters and build small events.</p>
+        <ul class="p-list">
+          <li>3 active projects</li>
+          <li>Social events only</li>
+          <li>Full Visual Editor</li>
+          <li>HTML/CSS source export</li>
+        </ul>
+        <a href="#" class="btn btn-outline w-full">Start for Free</a>
+      </div>
+      
+      <div class="p-card p-featured reveal delay-2">
+        <div class="p-badge">POPULAR</div>
+        <h3 class="p-tier gradient-text" style="display:inline-block">Pro</h3>
+        <div class="p-price">$12<span>/mo</span></div>
+        <p class="p-desc">For active creators running ongoing projects.</p>
+        <ul class="p-list">
+          <li>Unlimited projects</li>
+          <li>Social + Business templates</li>
+          <li>Custom domain connections</li>
+          <li>React/Tailwind exports</li>
+          <li>Remove TempSite badge</li>
+        </ul>
+        <a href="#" class="btn btn-primary btn-glow-pulse w-full">Start 14-Day Free Trial</a>
+      </div>
+      
+      <div class="p-card reveal delay-3">
+        <h3 class="p-tier">Business</h3>
+        <div class="p-price">$29<span>/mo</span></div>
+        <p class="p-desc">Built for advanced proposal delivery and teams.</p>
+        <ul class="p-list">
+          <li>Everything in Pro</li>
+          <li>Encrypted proposal category</li>
+          <li>Global password protection</li>
+          <li>Team workspaces (5 users)</li>
+          <li>Priority AI processing queue</li>
+        </ul>
+        <a href="#" class="btn btn-outline w-full">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="final-cta">
+    <div class="final-orb fo-1"></div>
+    <div class="final-orb fo-2"></div>
+    
+    <div class="container final-content reveal">
+      <h2>Ready to <span class="gradient-text">Build?</span></h2>
+      <p>Create your first high-performance event website in under 30 seconds.</p>
+      <a href="#" class="btn btn-primary btn-glow-pulse" style="padding: 16px 40px; font-size: 18px;">Start Building — Free</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div class="f-logo gradient-text">TempSite</div>
+      
+      <div class="f-links">
+        <a href="#categories">Categories</a>
+        <a href="#pricing">Pricing</a>
+        <a href="https://github.com/daththeanalyst/Tempsite" target="_blank">GitHub</a>
+        <a href="https://github.com/daththeanalyst/website-html-css-js-editor" target="_blank">GlassStudio</a>
+      </div>
+      
+      <div class="f-copy" style="color:var(--muted); font-size:14px;">
+        &copy; 2026 Dath. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar Scroll Trigger
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('navbar');
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    // Intersection Observers for Scroll Reveals & Animations
+    const observerOptions = { threshold: 0.15 };
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.id === 'type-trigger') {
+            entry.target.classList.add('typing-active');
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // Timeline Scroll Action
+    const timeline = document.getElementById('timeline');
+    if (timeline) {
+      const timelineObserver = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+          timeline.classList.add('scrolled');
+        }
+      }, { threshold: 0.5 });
+      timelineObserver.observe(timeline);
+    }
+
+    // 3D Tilt Card Parallax Effect
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // CSS Custom properties for glowing mouse follow effect
+        card.style.setProperty('--mx', `${x}px`);
+        card.style.setProperty('--my', `${y}px`);
+        
+        // 3D Tilt Math
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // Rotate inversely to mouse position
+        const rotateX = ((centerY - y) / centerY) * 15;
+        const rotateY = ((x - centerX) / centerX) * 15;
+        
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)`;
+      });
+    });
+  </script>
+</body>
+</html>
